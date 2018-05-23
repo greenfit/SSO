@@ -15,4 +15,8 @@ public class ResultBuilder {
     public static <T> Result<T> buildSuccess(T data) {
         return build(200, "成功", data);
     }
+
+    public static <T> Result<T> buildError(String message) {
+        return build(500, message, null);
+    }
 }

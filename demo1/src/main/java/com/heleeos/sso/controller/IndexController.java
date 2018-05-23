@@ -2,6 +2,7 @@ package com.heleeos.sso.controller;
 
 import com.heleeos.sso.bean.Result;
 import com.heleeos.sso.util.ResultBuilder;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -29,7 +31,7 @@ public class IndexController {
 
     @GetMapping("getCookie.json")
     public Result<List<Cookie>> getCookie(HttpServletRequest request) {
-        return ResultBuilder.buildSuccess(Arrays.asList(request.getCookies()));
+        return ResultBuilder.buildSuccess(Arrays.asList(Optional.ofNullable(request.getCookies()).orElse(new Cookie[]{})));
     }
 
     @GetMapping("setCookie")
@@ -37,6 +39,14 @@ public class IndexController {
         String key = request.getParameter("key");
         String value = request.getParameter("value");
         String domain = request.getParameter("domain");
+
+        if(StringUtils.isBlank(key)) {
+            return ResultBuilder.buildError("key 不能为空");
+        }
+
+        if(StringUtils.isBlank(value)) {
+            return ResultBuilder.buildError("value 不能为空");
+        }
 
         Cookie cookie = new Cookie(key, value);
         cookie.setDomain(domain);
