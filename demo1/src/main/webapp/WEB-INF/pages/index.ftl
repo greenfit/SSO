@@ -88,11 +88,6 @@
             <fieldset class="layui-elem-field">
                 <legend>设置Cookie</legend>
                 <div class="layui-field-box">
-
-                    <input type="radio" value="http://127.0.0.1:8080/setCookie" v-model="url" checked> 127.0.0.1
-                    <input type="radio" value="https://heleeos.com/sso/sso-demo1/setCookie" v-model="url"> heleeos.com
-                    <input type="radio" value="https://zpbig.com/sso/sso-demo1/setCookie" v-model="url"> zpbig.com
-
                     <div class="layui-form">
                         <div class="layui-form-item">
                             <label class="layui-form-label">key</label>
@@ -121,6 +116,11 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <input type="radio" value="https://heleeos.com/sso/sso-demo1/setCookie" v-model="url"> heleeos.com
+                    <input type="radio" value="https://zpbig.com/sso/sso-demo1/setCookie" v-model="url"> zpbig.com
+                    <input type="radio" value="http://127.0.0.1:8080/setCookie" v-model="url"> 127.0.0.1
                 </div>
             </fieldset>
         </div>
@@ -135,7 +135,7 @@
                 key : '',
                 value : '',
                 domain: '',
-                url: '',
+                url: 'http://127.0.0.1:8080/setCookie',
                 cookies1 : [],
                 cookies2 : [],
                 cookies3 : []
