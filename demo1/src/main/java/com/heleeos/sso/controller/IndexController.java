@@ -50,6 +50,8 @@ public class IndexController {
 
         Cookie cookie = new Cookie(key, value);
         cookie.setDomain(domain);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600);
         response.addCookie(cookie);
         return ResultBuilder.buildSuccess(cookie);
     }
