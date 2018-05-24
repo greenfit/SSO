@@ -23,14 +23,14 @@
                             <tr>
                                 <th>key</th>
                                 <th>value</th>
-                                <th>domain</th>
+                                <#--<th>domain</th>-->
                             </tr>
                             </thead>
                             <tbody>
                             <tr v-for="cookie in cookies1">
                                 <td>{{ cookie.name }}</td>
                                 <td>{{ cookie.value }}</td>
-                                <td>{{ cookie.domain }}</td>
+                                <#--<td>{{ cookie.domain }}</td>-->
                             </tr>
                             </tbody>
                         </table>
@@ -46,14 +46,14 @@
                             <tr>
                                 <th>key</th>
                                 <th>value</th>
-                                <th>domain</th>
+                                <#--<th>domain</th>-->
                             </tr>
                             </thead>
                             <tbody>
                             <tr v-for="cookie in cookies2">
                                 <td>{{ cookie.name }}</td>
                                 <td>{{ cookie.value }}</td>
-                                <td>{{ cookie.domain }}</td>
+                                <#--<td>{{ cookie.domain }}</td>-->
                             </tr>
                             </tbody>
                         </table>
@@ -69,14 +69,14 @@
                             <tr>
                                 <th>key</th>
                                 <th>value</th>
-                                <th>domain</th>
+                                <#--<th>domain</th>-->
                             </tr>
                             </thead>
                             <tbody>
                             <tr v-for="cookie in cookies3">
                                 <td>{{ cookie.name }}</td>
                                 <td>{{ cookie.value }}</td>
-                                <td>{{ cookie.domain }}</td>
+                                <#--<td>{{ cookie.domain }}</td>-->
                             </tr>
                             </tbody>
                         </table>
