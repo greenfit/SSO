@@ -3,11 +3,13 @@ package com.heleeos.sso.util;
 import org.apache.commons.lang.StringUtils;
 
 import java.awt.*;
-import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
 /**
  * Created by liyu on 2018/5/25.
@@ -41,7 +43,7 @@ public class ImageUtil {
 
     //画序号
     if (StringUtils.isNotBlank(index)) {
-      graphics.drawString("(" + index + ")", 222, 270);
+      graphics.drawString("(" + index + ")", 222, 320);
     }
 
     //画名字
@@ -51,29 +53,88 @@ public class ImageUtil {
   }
 
   private static void drawName(Graphics2D graphics, String name) {
-    Font font = new Font("仿宋体", 0, 24);
-    FontRenderContext fontRenderContext = graphics.getFontRenderContext();
-    graphics.translate(width / 2 - 10, 40);
+    graphics.setColor(Color.YELLOW);
+    graphics.setStroke(new BasicStroke(1));
+    ArcPath arcPath = new ArcPath(35, 30,width - 100, height - 100, -20, 220);
+    graphics.draw(arcPath);
 
-    double allTheta = 210 / 180 * Math.PI;
-    double start = 105 / 180 * Math.PI;
+    java.util.List<Point2D> points = new LinkedList<>();
+    PathIterator pathIterator = arcPath.getPathIterator(null, 0.1);
+    while (!pathIterator.isDone()) {
+      double[] coords = new double[6];
+      switch (pathIterator.currentSegment(coords)) {
+        case PathIterator.SEG_MOVETO:
+        case PathIterator.SEG_LINETO:
+          points.add(new Point2D.Double(coords[0], coords[1]));
+          break;
+      }
+      pathIterator.next();
+    }
+
+    Font font = new Font("仿宋体", Font.PLAIN, 25);
+    graphics.setFont(font);
+
+    int step = points.size() / (name.length() - 1);
+    int fontWidth = graphics.getFontMetrics().stringWidth(name.charAt(0) + "");
 
 
-    GlyphVector glyphVector = font.createGlyphVector(fontRenderContext, name);
-    int length = glyphVector.getNumGlyphs();
-    for (int i = 0; i < length; i++) {
+    int j = name.length() - 1;
+    for(int i = 0; i < points.size(); i = i + step, j--) {
+      Point2D point = points.get(i);
 
+      double angle = angleTo(points.get(i + 1), point);
+      System.out.println(angle);
 
-//      double theta = i * (allTheta / length) / 4;
-//    double theta = (double) i / (double) (length - 1) * Math.PI / 2;
+      int x = (int) point.getX() - fontWidth / 2;
+      int y = (int) point.getY() + fontWidth / 2;
 
-      double theta = (1.5) * Math.PI;
-      Point2D point2D = glyphVector.getGlyphPosition(i);
-      AffineTransform affineTransform = AffineTransform.getTranslateInstance(point2D.getX(), point2D.getY());
-      affineTransform.rotate(theta);
-      Shape glyph = glyphVector.getGlyphOutline(i);
-      Shape transformedGlyph = affineTransform.createTransformedShape(glyph);
-      graphics.fill(transformedGlyph);
+      AffineTransform affineTransform = new AffineTransform();
+      affineTransform.rotate(angle, 10, -10);
+
+      Font newFont = font.deriveFont(affineTransform);
+
+      graphics.setFont(newFont);
+//      graphics.rotate(angle, 42, 40);
+      graphics.setColor(Color.RED);
+
+//      graphics.translate(x, y);
+//      graphics.draw(generateShapeFromText(font, name.charAt(j) + ""));
+      graphics.drawString(name.charAt(j) + "", x, y);
+
+//      AffineTransform affineTransform = new AffineTransform();
+//      Rectangle bounds = shape.getBounds();
+//      affineTransform.rotate(angle, (bounds.width / 2), (bounds.width / 2));
+//
+//      Path2D player = new Path2D.Double(shape, affineTransform);
+//      graphics.translate(point.getX() - (bounds.width / 2), point.getY() - (bounds.height / 2));
+//      graphics.setColor(Color.RED);
+//      graphics.draw(player);
+    }
+
+  }
+
+  private static double angleTo(Point2D from, Point2D to) {
+    return Math.atan2(to.getY() - from.getY(), to.getX() - from.getX());
+  }
+
+  private static Shape generateShapeFromText(Font font, String string) {
+    BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+    Graphics2D g2 = img.createGraphics();
+
+    try {
+      GlyphVector vect = font.createGlyphVector(g2.getFontRenderContext(), string);
+      return vect.getOutline(0f, (float) -vect.getVisualBounds().getY());
+    } finally {
+      g2.dispose();
+    }
+  }
+
+  private static int getWidth(char c, FontMetrics fm) {
+    if (c == ' ' || Character.isSpaceChar(c)) {
+      return fm.charWidth('A');
+    }
+    else {
+      return fm.charWidth(c);
     }
   }
 
@@ -84,8 +145,8 @@ public class ImageUtil {
   }
 
   private static void drawTaxNo(Graphics2D graphics, String taxNumber) {
-    graphics.setFont(new Font("仿宋体", 0, getPxFromMM(1.3)));
-    graphics.drawString(taxNumber, 120, 150);
+    graphics.setFont(new Font("仿宋体", 0, getPxFromMM(2)));
+    graphics.drawString(taxNumber, 100, 220);
   }
 
   private static void drawText(Graphics2D graphics) {
@@ -97,7 +158,7 @@ public class ImageUtil {
     FontMetrics fontMetrics = graphics.getFontMetrics();
     int fWidth = fontMetrics.stringWidth(text);
 
-    graphics.drawString(text, width / 2 - fWidth / 2, 207);
+    graphics.drawString(text, width / 2 - fWidth / 2, 280);
   }
 
   /**
