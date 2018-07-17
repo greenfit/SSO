@@ -53,9 +53,10 @@ public class ImageUtil {
   }
 
   private static void drawName(Graphics2D graphics, String name) {
+    ArcPath arcPath = new ArcPath(35, 30,width - 100, height - 100, -15, 220);
+
     graphics.setColor(Color.YELLOW);
     graphics.setStroke(new BasicStroke(1));
-    ArcPath arcPath = new ArcPath(35, 30,width - 100, height - 100, -20, 220);
     graphics.draw(arcPath);
 
     java.util.List<Point2D> points = new LinkedList<>();
@@ -80,6 +81,9 @@ public class ImageUtil {
 
     int j = name.length() - 1;
     for(int i = 0; i < points.size(); i = i + step, j--) {
+      if(i == points.size() - 1) {
+        i = i -1;
+      }
       Point2D point = points.get(i);
 
       double angle = angleTo(points.get(i + 1), point);
@@ -94,21 +98,9 @@ public class ImageUtil {
       Font newFont = font.deriveFont(affineTransform);
 
       graphics.setFont(newFont);
-//      graphics.rotate(angle, 42, 40);
       graphics.setColor(Color.RED);
 
-//      graphics.translate(x, y);
-//      graphics.draw(generateShapeFromText(font, name.charAt(j) + ""));
       graphics.drawString(name.charAt(j) + "", x, y);
-
-//      AffineTransform affineTransform = new AffineTransform();
-//      Rectangle bounds = shape.getBounds();
-//      affineTransform.rotate(angle, (bounds.width / 2), (bounds.width / 2));
-//
-//      Path2D player = new Path2D.Double(shape, affineTransform);
-//      graphics.translate(point.getX() - (bounds.width / 2), point.getY() - (bounds.height / 2));
-//      graphics.setColor(Color.RED);
-//      graphics.draw(player);
     }
 
   }
