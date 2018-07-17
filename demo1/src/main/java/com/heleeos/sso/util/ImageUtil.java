@@ -20,6 +20,12 @@ public class ImageUtil {
 
   private static int height = getPxFromMM(30);
 
+  /**
+   * 画图章
+   * @param name 企业名称
+   * @param taxNumber 税号
+   * @param index 图章序号
+   */
   public static BufferedImage drawTextOnPath(String name, String taxNumber, String index) {
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     Graphics2D graphics = image.createGraphics();
@@ -29,24 +35,24 @@ public class ImageUtil {
     graphics.dispose();
     graphics = image.createGraphics();
 
-    //
+    //2. 设置颜色
     graphics.setColor(new Color(255, 0, 0));
 
-    //外部椭圆
+    //3. 外部椭圆
     drawOval(graphics);
 
-    //画税号
+    //4. 画税号
     drawTaxNo(graphics, taxNumber);
 
-    //画专用章
+    //5. 画专用章文字
     drawText(graphics);
 
-    //画序号
+    //6. 画序号
     if (StringUtils.isNotBlank(index)) {
       graphics.drawString("(" + index + ")", 222, 320);
     }
 
-    //画名字
+    //7. 画企业名称
     drawName(graphics, name);
 
     return image;
@@ -55,9 +61,13 @@ public class ImageUtil {
   private static void drawName(Graphics2D graphics, String name) {
     int start = -15;
     int extent = 210;
-    if(name.length() % 2 == 0) {
-      start = -15;
-      extent = 210;
+    if(name.length() > 10) {
+      start = -20;
+      extent = 220;
+    }
+    if(name.length() > 15) {
+      start = -30;
+      extent = 240;
     }
 
     ArcPath arcPath = new ArcPath(35, 30,400, 300, start, extent);
@@ -88,9 +98,9 @@ public class ImageUtil {
     int size = name.length() - 1; //需要空余的
     int step = points.size() / size;
 
-    int startPoint = points.size() % size / 2;
+    int startPoint = (points.size() % size / 2) + (points.size() % size % 2 != 0 ? 0 : 0);
 
-    System.out.println("step:" + step + ", all:" + points.size() + ", size:" + size + "," + (points.size() % size));
+    System.out.println("startPoint:" + startPoint + "step:" + step + ", all:" + points.size() + ", size:" + size + "," + (points.size() % size));
 
     int fontWidth = graphics.getFontMetrics().stringWidth(name.charAt(0) + "");
 
