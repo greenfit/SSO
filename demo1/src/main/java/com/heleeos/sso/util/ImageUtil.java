@@ -5,13 +5,13 @@ import org.apache.commons.lang.StringUtils;
 import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
 /**
+ *
  * Created by liyu on 2018/5/25.
  */
 public class ImageUtil {
@@ -58,6 +58,11 @@ public class ImageUtil {
     return image;
   }
 
+  /**
+   * 画企业名称
+   * @param graphics 画笔
+   * @param name 企业名称
+   */
   private static void drawName(Graphics2D graphics, String name) {
     int start = -15;
     int extent = 210;
@@ -75,6 +80,7 @@ public class ImageUtil {
     graphics.setColor(Color.YELLOW);
     graphics.setStroke(new BasicStroke(1));
     graphics.draw(arcPath);
+
 
     int number = 0;
     java.util.List<Point2D> points = new LinkedList<>();
@@ -95,16 +101,16 @@ public class ImageUtil {
     Font font = new Font("仿宋体", Font.PLAIN, 25);
     graphics.setFont(font);
 
+
     int size = name.length() - 1; //需要空余的
     int step = points.size() / size;
-
     int startPoint = (points.size() % size / 2) + (points.size() % size % 2 != 0 ? 0 : 0);
 
     System.out.println("startPoint:" + startPoint + "step:" + step + ", all:" + points.size() + ", size:" + size + "," + (points.size() % size));
 
+
+    // 在每个点上画文字
     int fontWidth = graphics.getFontMetrics().stringWidth(name.charAt(0) + "");
-
-
     int j = name.length() - 1;
     for(int i = startPoint; i < points.size(); i = i + step, j--) {
       if(i == points.size() - 1) {
@@ -113,14 +119,12 @@ public class ImageUtil {
       Point2D point = points.get(i);
 
       double angle = angleTo(points.get(i + 1), point);
-//      System.out.println(angle);
-
       int x = (int) point.getX() - fontWidth / 2;
       int y = (int) point.getY() + fontWidth / 2;
 
+      //旋转字体
       AffineTransform affineTransform = new AffineTransform();
       affineTransform.rotate(angle, 10, -10);
-
       Font newFont = font.deriveFont(affineTransform);
 
       graphics.setFont(newFont);
@@ -131,37 +135,30 @@ public class ImageUtil {
 
   }
 
+  /**
+   * 计算旋转角度
+   * @param from 基准点
+   * @param to 要旋转的点
+   */
   private static double angleTo(Point2D from, Point2D to) {
     return Math.atan2(to.getY() - from.getY(), to.getX() - from.getX());
   }
 
-  private static Shape generateShapeFromText(Font font, String string) {
-    BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-    Graphics2D g2 = img.createGraphics();
-
-    try {
-      GlyphVector vect = font.createGlyphVector(g2.getFontRenderContext(), string);
-      return vect.getOutline(0f, (float) -vect.getVisualBounds().getY());
-    } finally {
-      g2.dispose();
-    }
-  }
-
-  private static int getWidth(char c, FontMetrics fm) {
-    if (c == ' ' || Character.isSpaceChar(c)) {
-      return fm.charWidth('A');
-    }
-    else {
-      return fm.charWidth(c);
-    }
-  }
-
+  /**
+   * 画最外部的椭圆
+   * @param graphics 画笔
+   */
   private static void drawOval(Graphics2D graphics) {
     int size = getPxFromMM(1);
     graphics.setStroke(new BasicStroke(size));
     graphics.drawOval(size, size, width - size * 2, height - size * 2);
   }
 
+  /**
+   * 画税号
+   * @param graphics 画笔
+   * @param taxNumber 税号
+   */
   private static void drawTaxNo(Graphics2D graphics, String taxNumber) {
     Font font = new Font("仿宋体", 0, getPxFromMM(2));
 
@@ -174,6 +171,10 @@ public class ImageUtil {
     graphics.drawString(taxNumber, 100, 220);
   }
 
+  /**
+   * 画专用章
+   * @param graphics 画笔
+   */
   private static void drawText(Graphics2D graphics) {
     String text = "发票专用章";
 
