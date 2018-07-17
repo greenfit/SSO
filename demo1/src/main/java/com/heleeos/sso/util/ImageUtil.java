@@ -57,7 +57,7 @@ public class ImageUtil {
     int extent = 210;
     if(name.length() % 2 == 0) {
       start = -15;
-      extent = 200;
+      extent = 210;
     }
 
     ArcPath arcPath = new ArcPath(35, 30,400, 300, start, extent);
@@ -66,10 +66,12 @@ public class ImageUtil {
     graphics.setStroke(new BasicStroke(1));
     graphics.draw(arcPath);
 
+    int number = 0;
     java.util.List<Point2D> points = new LinkedList<>();
-    PathIterator pathIterator = arcPath.getPathIterator(null, 0.05);
+    PathIterator pathIterator = arcPath.getPathIterator(null, 0.1);
     while (!pathIterator.isDone()) {
-      double[] coords = new double[8];
+      System.out.println(number++);
+      double[] coords = new double[6];
       switch (pathIterator.currentSegment(coords)) {
         case PathIterator.SEG_MOVETO:
         case PathIterator.SEG_LINETO:
@@ -77,21 +79,24 @@ public class ImageUtil {
           break;
       }
       pathIterator.next();
+
     }
 
     Font font = new Font("仿宋体", Font.PLAIN, 25);
     graphics.setFont(font);
 
-
     int size = name.length() - 1; //需要空余的
     int step = points.size() / size;
+
+    int startPoint = points.size() % size / 2;
+
     System.out.println("step:" + step + ", all:" + points.size() + ", size:" + size + "," + (points.size() % size));
 
     int fontWidth = graphics.getFontMetrics().stringWidth(name.charAt(0) + "");
 
 
     int j = name.length() - 1;
-    for(int i = 0; i < points.size(); i = i + step, j--) {
+    for(int i = startPoint; i < points.size(); i = i + step, j--) {
       if(i == points.size() - 1) {
         i = i -1;
       }
