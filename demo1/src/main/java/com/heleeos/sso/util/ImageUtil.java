@@ -53,7 +53,14 @@ public class ImageUtil {
   }
 
   private static void drawName(Graphics2D graphics, String name) {
-    ArcPath arcPath = new ArcPath(35, 30,width - 100, height - 100, -15, 220);
+    int start = -15;
+    int extent = 210;
+    if(name.length() % 2 == 0) {
+      start = -15;
+      extent = 200;
+    }
+
+    ArcPath arcPath = new ArcPath(35, 30,400, 300, start, extent);
 
     graphics.setColor(Color.YELLOW);
     graphics.setStroke(new BasicStroke(1));
@@ -62,7 +69,7 @@ public class ImageUtil {
     java.util.List<Point2D> points = new LinkedList<>();
     PathIterator pathIterator = arcPath.getPathIterator(null, 0.1);
     while (!pathIterator.isDone()) {
-      double[] coords = new double[6];
+      double[] coords = new double[8];
       switch (pathIterator.currentSegment(coords)) {
         case PathIterator.SEG_MOVETO:
         case PathIterator.SEG_LINETO:
@@ -75,7 +82,11 @@ public class ImageUtil {
     Font font = new Font("仿宋体", Font.PLAIN, 25);
     graphics.setFont(font);
 
-    int step = points.size() / (name.length() - 1);
+
+    int size = name.length() - 1; //需要空余的
+    int step = points.size() / size;
+    System.out.println("step:" + step + ", all:" + points.size() + ", size:" + size + "," + (points.size() % size));
+
     int fontWidth = graphics.getFontMetrics().stringWidth(name.charAt(0) + "");
 
 
@@ -87,7 +98,7 @@ public class ImageUtil {
       Point2D point = points.get(i);
 
       double angle = angleTo(points.get(i + 1), point);
-      System.out.println(angle);
+//      System.out.println(angle);
 
       int x = (int) point.getX() - fontWidth / 2;
       int y = (int) point.getY() + fontWidth / 2;
@@ -137,7 +148,14 @@ public class ImageUtil {
   }
 
   private static void drawTaxNo(Graphics2D graphics, String taxNumber) {
-    graphics.setFont(new Font("仿宋体", 0, getPxFromMM(2)));
+    Font font = new Font("仿宋体", 0, getPxFromMM(2));
+
+    AffineTransform affineTransform = new AffineTransform();
+    affineTransform.setToScale(1, 1.5);
+
+    Font newFont = font.deriveFont(affineTransform);
+
+    graphics.setFont(newFont);
     graphics.drawString(taxNumber, 100, 220);
   }
 
