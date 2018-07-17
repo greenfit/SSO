@@ -67,7 +67,7 @@ public class ImageUtil {
     graphics.draw(arcPath);
 
     java.util.List<Point2D> points = new LinkedList<>();
-    PathIterator pathIterator = arcPath.getPathIterator(null, 0.1);
+    PathIterator pathIterator = arcPath.getPathIterator(null, 0.05);
     while (!pathIterator.isDone()) {
       double[] coords = new double[8];
       switch (pathIterator.currentSegment(coords)) {
