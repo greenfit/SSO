@@ -82,11 +82,9 @@ public class ImageUtil {
     graphics.draw(arcPath);
 
 
-    int number = 0;
     java.util.List<Point2D> points = new LinkedList<>();
     PathIterator pathIterator = arcPath.getPathIterator(null, 0.1);
     while (!pathIterator.isDone()) {
-      System.out.println(number++);
       double[] coords = new double[6];
       switch (pathIterator.currentSegment(coords)) {
         case PathIterator.SEG_MOVETO:
@@ -101,8 +99,11 @@ public class ImageUtil {
     Font font = new Font("仿宋体", Font.PLAIN, 25);
     graphics.setFont(font);
 
+    int subCount = 1;
+    int dispCount = StringUtils.countMatches(name, "(");
 
-    int size = name.length() - 1; //需要空余的
+
+    int size = name.length() - (subCount + dispCount * 2); //需要空余的
     int step = points.size() / size;
     int startPoint = (points.size() % size / 2) + (points.size() % size % 2 != 0 ? 0 : 0);
 
@@ -112,7 +113,17 @@ public class ImageUtil {
     // 在每个点上画文字
     int fontWidth = graphics.getFontMetrics().stringWidth(name.charAt(0) + "");
     int j = name.length() - 1;
-    for(int i = startPoint; i < points.size(); i = i + step, j--) {
+    for(int i = startPoint; i < points.size(); j--) {
+      if(j < 0) {
+        break;
+      }
+      char ch = name.charAt(j);
+
+      char nextCh = 0;
+      if(j > 0) {
+        nextCh = name.charAt(j - 1);
+      }
+
       if(i == points.size() - 1) {
         i = i -1;
       }
@@ -130,7 +141,13 @@ public class ImageUtil {
       graphics.setFont(newFont);
       graphics.setColor(Color.RED);
 
-      graphics.drawString(name.charAt(j) + "", x, y);
+      graphics.drawString(ch + "", x, y);
+
+      if(ch == '(' || ch == ')' || nextCh == '(' || nextCh == ')') {
+        i = i + step / 4 * 3;
+      } else {
+        i = i + step;
+      }
     }
 
   }
